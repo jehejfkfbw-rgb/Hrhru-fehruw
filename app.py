@@ -1,357 +1,264 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خدماتنا - حلول رقمية متكاملة</title>
-    <!-- مكتبة Google Sign-In -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <!-- خط Tajawal -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- مكتبة الأيقونات -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+import streamlit as st
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif;
-        }
+# إعدادات الصفحة وعنوان المتصفح
+st.set_page_config(
+    page_title="خدماتنا الرقمية - حلول متكاملة",
+    page_icon="💻",
+    layout="centered"
+)
 
-        body {
-            background: radial-gradient(circle at top left, #12002b, #080015);
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+# تصميم وتنسيق الواجهة العامة (تتأقلم مع جميع الشاشات والموبايل واللابتوب)
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+    
+    * {
+        font-family: 'Tajawal', sans-serif;
+    }
+    
+    .stApp {
+        background: radial-gradient(circle at top, #0f0c29, #302b63, #24243e);
+        color: #ffffff;
+    }
+    
+    .hero-container {
+        text-align: center;
+        padding: 20px 10px;
+        margin-bottom: 10px;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, #00f2fe, #4facfe, #00ff87);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+    
+    .hero-subtitle {
+        color: #cfd8dc;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .service-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .service-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 12px;
+        text-align: right;
+    }
+    
+    .service-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 15px 0;
+    }
+    
+    .service-list li {
+        font-size: 0.9rem;
+        color: #b0bec5;
+        margin-bottom: 6px;
+        position: relative;
+        padding-right: 18px;
+        text-align: right;
+    }
+    
+    .service-list li::before {
+        content: "✔";
+        position: absolute;
+        right: 0;
+        color: #00ff87;
+        font-size: 0.8rem;
+    }
+    
+    .price-box {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 12px;
+    }
+    
+    .price-label {
+        font-size: 0.75rem;
+        color: #90a4ae;
+        display: block;
+    }
+    
+    .price-value {
+        font-size: 1.3rem;
+        font-weight: 900;
+        color: #00ff87;
+    }
+    
+    .whatsapp-btn {
+        display: block;
+        background: linear-gradient(135deg, #25d366, #128c7e);
+        color: white !important;
+        text-align: center;
+        padding: 10px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+    
+    .contact-footer {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .phone-number {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: #00f2fe;
+        letter-spacing: 2px;
+        margin: 8px 0;
+        direction: ltr;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 40px 20px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 2.8rem;
-            font-weight: 900;
-            background: linear-gradient(90deg, #38ef7d, #11998e, #00d2ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
-
-        header p {
-            color: #a0a5c0;
-            font-size: 1.2rem;
-        }
-
-        .auth-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 40px;
-            gap: 12px;
-        }
-
-        #user-info {
-            display: none;
-            background: rgba(56, 239, 125, 0.1);
-            border: 1px solid #38ef7d;
-            padding: 10px 20px;
-            border-radius: 50px;
-            color: #38ef7d;
-            font-weight: bold;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 25px;
-            position: relative;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(0, 210, 255, 0.4);
-            box-shadow: 0 15px 30px rgba(0, 210, 255, 0.15);
-        }
-
-        .card-num {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            color: #8a8fb5;
-        }
-
-        .icon-box {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            margin: 0 auto 15px;
-        }
-
-        .c1 .icon-box { background: rgba(0, 168, 255, 0.15); color: #00a8ff; }
-        .c2 .icon-box { background: rgba(56, 239, 125, 0.15); color: #38ef7d; }
-        .c3 .icon-box { background: rgba(255, 159, 26, 0.15); color: #ff9f1a; }
-        .c4 .icon-box { background: rgba(156, 136, 255, 0.15); color: #9c88ff; }
-
-        .card h3 {
-            font-size: 1.3rem;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .card ul {
-            list-style: none;
-            margin-bottom: 20px;
-        }
-
-        .card ul li {
-            font-size: 0.9rem;
-            color: #c4c9e2;
-            margin-bottom: 8px;
-            position: relative;
-            padding-right: 15px;
-        }
-
-        .card ul li::before {
-            content: "•";
-            position: absolute;
-            right: 0;
-            color: #00d2ff;
-        }
-
-        .price-tag {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .price-tag span {
-            display: block;
-            font-size: 0.75rem;
-            color: #8a8fb5;
-        }
-
-        .price-tag strong {
-            font-size: 1.4rem;
-        }
-
-        .c1 .price-tag strong { color: #00a8ff; }
-        .c2 .price-tag strong { color: #38ef7d; }
-        .c3 .price-tag strong { color: #ff9f1a; }
-        .c4 .price-tag strong { color: #9c88ff; }
-
-        .contact-bar {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            padding: 12px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .contact-bar span {
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        .phone-num {
-            font-size: 1.5rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #ffffff;
-            text-decoration: none;
-            direction: ltr;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: 0.3s;
-        }
-
-        .btn-whatsapp { background: #25D366; }
-        .btn-phone { background: #00a8ff; }
-
-        .btn-icon:hover { transform: scale(1.1); }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <header>
-        <h1>خدماتنا</h1>
-        <p>حلول رقمية متكاملة لنجاح مشروعك</p>
-    </header>
-
-    <!-- تسجيل الدخول بحساب جوجل -->
-    <div class="auth-container">
-        <div id="g_id_onload"
-             data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-             data-callback="handleCredentialResponse">
-        </div>
-        <div class="g_id_signin" data-type="standard" data-theme="dark" data-size="large"></div>
-        <div id="user-info"></div>
-    </div>
-
-    <!-- شبكة الخدمات والأقسام -->
-    <div class="services-grid">
-        <!-- 01: مواقع الويب -->
-        <div class="card c1">
-            <span class="card-num">01</span>
-            <div class="icon-box"><i class="fa-solid fa-laptop-code"></i></div>
-            <h3>تصميم وتطوير مواقع الويب</h3>
-            <ul>
-                <li>تصميم احترافي وعصري</li>
-                <li>متجاوب مع جميع الأجهزة</li>
-                <li>سرعة وأداء عالٍ</li>
-                <li>تحسين لمحرّكات البحث SEO</li>
-            </ul>
-            <div class="price-tag">
-                <span>تبدأ من</span>
-                <strong>2,500 <small style="font-size: 0.8rem">جنيه</small></strong>
-            </div>
-        </div>
-
-        <!-- 02: تطبيقات أندرويد -->
-        <div class="card c2">
-            <span class="card-num">02</span>
-            <div class="icon-box"><i class="fa-brands fa-android"></i></div>
-            <h3>تطوير تطبيقات أندرويد</h3>
-            <ul>
-                <li>تطبيقات احترافية بأحدث التقنيات</li>
-                <li>تصميم واجهات عصرية</li>
-                <li>أداء سريع وسلس</li>
-                <li>دعم وتحديثات مستمرة</li>
-            </ul>
-            <div class="price-tag">
-                <span>تبدأ من</span>
-                <strong>3,000 <small style="font-size: 0.8rem">جنيه</small></strong>
-            </div>
-        </div>
-
-        <!-- 03: المتاجر الإلكترونية -->
-        <div class="card c3">
-            <span class="card-num">03</span>
-            <div class="icon-box"><i class="fa-solid fa-cart-shopping"></i></div>
-            <h3>تطوير المتاجر الإلكترونية</h3>
-            <ul>
-                <li>متجر احترافي متكامل</li>
-                <li>دعم الدفع الإلكتروني</li>
-                <li>إدارة المنتجات والمخزون</li>
-                <li>تقارير ومتابعة المبيعات</li>
-            </ul>
-            <div class="price-tag">
-                <span>تبدأ من</span>
-                <strong>3,500 <small style="font-size: 0.8rem">جنيه</small></strong>
-            </div>
-        </div>
-
-        <!-- 04: الجرافيك -->
-        <div class="card c4">
-            <span class="card-num">04</span>
-            <div class="icon-box"><i class="fa-solid fa-pen-nib"></i></div>
-            <h3>قسم الجرافيك ديزاين</h3>
-            <ul>
-                <li>تصميم شعارات وهوية بصرية</li>
-                <li>تصاميم إعلانية ومنشورات</li>
-                <li>تصميم بروفايل وعروض تقديمية</li>
-                <li>إبداع وجودة عالية</li>
-            </ul>
-            <div class="price-tag">
-                <span>تبدأ من</span>
-                <strong>1,500 <small style="font-size: 0.8rem">جنيه</small></strong>
-            </div>
-        </div>
-    </div>
-
-    <!-- شريط التواصل السفلية -->
-    <div class="contact-bar">
-        <span>تواصل معنا الآن</span>
-        <a href="tel:01213783090" class="phone-num">01213783090</a>
-        <div class="actions">
-            <a href="https://wa.me/201213783090" target="_blank" class="btn-icon btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href="tel:01213783090" class="btn-icon btn-phone"><i class="fa-solid fa-phone"></i></a>
-        </div>
-    </div>
+# العنوان الرئيسي
+st.markdown("""
+<div class="hero-container">
+    <h1 class="hero-title">خدماتنا الرقمية</h1>
+    <p class="hero-subtitle">حلول برمجية وتصميمية متكاملة لرفع كفاءة نجاح مشروعك</p>
 </div>
+""", unsafe_allow_html=True)
 
-<script>
-    function parseJwt(token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    }
+# رقم الواتساب الموحد
+phone_number = "201213783090"
 
-    function handleCredentialResponse(response) {
-        const responsePayload = parseJwt(response.credential);
-        
-        const userInfoDiv = document.getElementById('user-info');
-        userInfoDiv.style.display = 'block';
-        userInfoDiv.innerHTML = `مرحباً بك يا ${responsePayload.name} 👋 (${responsePayload.email})`;
-        
-        document.querySelector('.g_id_signin').style.display = 'none';
-    }
-</script>
+# تقسيم الشاشة إلى عمودين (يتكيف بذكاء مع الموبايل ليصبحوا عموداً واحداً تلقائياً)
+col1, col2 = st.columns(2, gap="medium")
 
-</body>
-</html>
+with col1:
+    msg1 = "مرحباً، أرغب في الاستفسار عن خدمة تصميم وتطوير مواقع الويب (تبدأ من 2,500 جنيه)."
+    st.markdown(f"""
+    <div class="service-card">
+        <div>
+            <div class="service-title">🌐 01. تصميم وتطوير مواقع الويب</div>
+            <ul class="service-list">
+                <li>تصميم احترافي وعصري متجاوب</li>
+                <li>توافق تام مع جميع الأجهزة والشاشات</li>
+                <li>سرعة فائقة وأداء عالي الجودة</li>
+                <li>تهيئة وتحسين محركات البحث SEO</li>
+            </ul>
+        </div>
+        <div>
+            <div class="price-box">
+                <span class="price-label">تبدأ الأسعار من</span>
+                <span class="price-value">2,500 جنيه</span>
+            </div>
+            <a href="https://wa.me/{phone_number}?text={msg1}" target="_blank" class="whatsapp-btn">
+                💬 اطلب الخدمة عبر الواتساب
+            </a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    msg3 = "مرحباً، أرغب في الاستفسار عن خدمة تطوير المتاجر الإلكترونية (تبدأ من 3,500 جنيه)."
+    st.markdown(f"""
+    <div class="service-card">
+        <div>
+            <div class="service-title">🛒 03. تطوير المتاجر الإلكترونية</div>
+            <ul class="service-list">
+                <li>متجر إلكتروني احترافي متكامل</li>
+                <li>ربط بوابات الدفع الإلكتروني</li>
+                <li>إدارة متطورة للمنتجات والمخزون</li>
+                <li>تقارير شاملة ومتابعة دقيقة للمبيعات</li>
+            </ul>
+        </div>
+        <div>
+            <div class="price-box">
+                <span class="price-label">تبدأ الأسعار من</span>
+                <span class="price-value">3,500 جنيه</span>
+            </div>
+            <a href="https://wa.me/{phone_number}?text={msg3}" target="_blank" class="whatsapp-btn">
+                💬 اطلب الخدمة عبر الواتساب
+            </a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    msg2 = "مرحباً، أرغب في الاستفسار عن خدمة تطوير تطبيقات أندرويد (تبدأ من 3,000 جنيه)."
+    st.markdown(f"""
+    <div class="service-card">
+        <div>
+            <div class="service-title">📱 02. تطوير تطبيقات أندرويد</div>
+            <ul class="service-list">
+                <li>تطبيقات احترافية بأحدث التقنيات</li>
+                <li>تصميم واجهات مستخدم عصرية</li>
+                <li>أداء سريع، سلس، وآمن تماماً</li>
+                <li>دعم فني وتحديثات مستمرة</li>
+            </ul>
+        </div>
+        <div>
+            <div class="price-box">
+                <span class="price-label">تبدأ الأسعار من</span>
+                <span class="price-value">3,000 جنيه</span>
+            </div>
+            <a href="https://wa.me/{phone_number}?text={msg2}" target="_blank" class="whatsapp-btn">
+                💬 اطلب الخدمة عبر الواتساب
+            </a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    msg4 = "مرحباً، أرغب في الاستفسار عن خدمة الجرافيك ديزاين (تبدأ من 1,500 جنيه)."
+    st.markdown(f"""
+    <div class="service-card">
+        <div>
+            <div class="service-title">🎨 04. قسم الجرافيك ديزاين</div>
+            <ul class="service-list">
+                <li>تصميم شعارات وهوية بصرية كاملة</li>
+                <li>تصاميم إعلانية ومنشورات سوشيال ميديا</li>
+                <li>تصميم بروفايل شركات وعروض تقديمية</li>
+                <li>إبداع فني وجودة طباعة عالية</li>
+            </ul>
+        </div>
+        <div>
+            <div class="price-box">
+                <span class="price-label">تبدأ الأسعار من</span>
+                <span class="price-value">1,500 جنيه</span>
+            </div>
+            <a href="https://wa.me/{phone_number}?text={msg4}" target="_blank" class="whatsapp-btn">
+                💬 اطلب الخدمة عبر الواتساب
+            </a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# شريط التواصل السفلي
+st.markdown(f"""
+<div class="contact-footer">
+    <h3>📞 تواصل معنا مباشرة الآن</h3>
+    <div class="phone-number">01213783090</div>
+    <p style="color: #90a4ae; margin-bottom: 12px; font-size: 0.9rem;">نحن جاهزون للرد على كافة استفساراتكم وتنفيذ مشاريعكم بكفاءة عالية</p>
+    <a href="https://wa.me/{phone_number}?text=مرحباً، تواصلت معكم من الموقع وأرغب في الاستفسار عن الخدمات." target="_blank" class="whatsapp-btn" style="max-width: 260px; margin: 0 auto; font-size: 1rem;">
+        💬 تواصل معنا عبر واتساب
+    </a>
+</div>
+""", unsafe_allow_html=True)
