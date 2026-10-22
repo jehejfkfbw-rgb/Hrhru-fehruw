@@ -1,0 +1,48 @@
+name: Midar CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/app_db
+      AUTH_SECRET: github_actions_build_only_8b21f0d97a62c4e8b5f1a39d74c02e
+      DEVELOPER_EMAIL: developer@midar.app
+      DEVELOPER_INITIAL_PASSWORD: 900600
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: app_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d app_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Apply database schema
+        run: npx drizzle-kit push
+      - name: Generate Next.js types
+        run: npx next typegen
+      - name: Check TypeScript
+        run: npm exec tsc -- --noEmit --pretty false
+      - name: Build production application
+        run: npm run build
